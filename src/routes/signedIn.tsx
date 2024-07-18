@@ -1,16 +1,50 @@
 import { useState, useEffect } from 'react'
 import { FormControl, InputGroup, Container, Button, Row, Card } from "react-bootstrap";
+import { useLocation } from 'react-router-dom';
 import './App.css'
 
-function App() {
+function SignedIn() {
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
   const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
   const [searchInput, setSearchInput] = useState("");
   const [accessToken, setAccessToken] = useState("");
+  const [userAccessToken, setUserAccessToken] = useState("");
   const [albums, setAlbums] = useState([]);
 
+  const location = useLocation();
+  const data = location.state;
+
+  const redirectUri = 'http://localhost:5173/SignedIn';
+
+  const getToken = async (code) => {
+
+    // stored in the previous step
+    let codeVerifier = localStorage.getItem('code_verifier');
+    console.log(codeVerifier);
+    const payload = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: clientId,
+        grant_type: 'authorization_code',
+        code: code,
+        redirect_uri: redirectUri,
+        code_verifier: codeVerifier,
+      }),
+    }
+  
+    const body = await fetch("https://accounts.spotify.com/api/token", payload);
+    const response = await body.json();
+  
+    setUserAccessToken(response.access_token);
+  }
+  const urlParams = new URLSearchParams(window.location.search);
+  getToken(urlParams.get('code'));
+  console.log(userAccessToken)
+
   useEffect(() => {
-    console.log(clientId, clientSecret, accessToken);
     let authParams = {
       method: "POST",
       headers: {
@@ -64,7 +98,7 @@ function App() {
 
   return (
     <>
-      <h1>SpotMe</h1>
+      <h1><span className="title-spot">Spot</span>Me</h1>
       <Container>
         <InputGroup>
           <FormControl
@@ -118,7 +152,7 @@ function App() {
                     }}
                   >{album.name}</Card.Title>
 
-                  <Card.Text style={{ fontColor: 'white'}}>{album.release_date}</Card.Text>
+                  <Card.Text>{album.release_date}</Card.Text>
                 </Card.Body>
               </Card>
             })
@@ -129,4 +163,4 @@ function App() {
   )
 }
 
-export default App
+export default SignedIn
