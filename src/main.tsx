@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from "./routes/App";
-import SignedIn from './routes/SignedIn';
+import Callback from './routes/Callback';
+import Home from './routes/Home';
 import './main.css'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -11,8 +12,12 @@ const router = createBrowserRouter([
     element: <App />,
   },
   {
-    path: "/signedIn",
-    element: <SignedIn />,
+    path: "/Callback",
+    element: <Callback />,
+  },
+  {
+    path: "/Home",
+    element: <Home />,
   },
 ]);
 ReactDOM.createRoot(document.getElementById('root')!).render(
