@@ -26,7 +26,6 @@ async function generateCodeChallenge(codeVerifier: string) {
       .replace(/=+$/, '');
 }
 
-//new Date().getTime() < Number(expire_in)
 function App() {
   const [userAccessToken, setUserAccessToken] = useState("");
   const navigate = useNavigate();
@@ -70,24 +69,37 @@ function App() {
     .then((result) => result.json())
     .then((data) => {
       localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("refresh_token", data.refresh_token);
       localStorage.setItem("expires_in", String(new Date().getTime() + data.expires_in * 1000));
+      setUserAccessToken(data.access_token);
     });
 
   }
 
-  useEffect(() => {
+  function checkAccessKey() {
     let accessToken = localStorage.getItem("access_token")
     if (accessToken) {
-      let expire_in = localStorage.getItem("expire_in")
-      if (new Date().getTime() > Number(expire_in)) {
+      let expires_in = localStorage.getItem("expires_in")
+      if (new Date().getTime() > Number(expires_in)) {
         console.log("Token expired")
         refreshToken();
+        if (userAccessToken) {
+          navigate("/Home");
+        } else {
+          setUserAccessToken("");
+        }
+      } else {
+        navigate("/Home");
       }
-      setUserAccessToken(accessToken);
-      navigate("/Home");
     }
+  }
+
+  useEffect(() => {
+    checkAccessKey();
   
   }, []);
+
+
 
   return (
     <>
