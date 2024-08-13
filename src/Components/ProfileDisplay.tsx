@@ -1,5 +1,4 @@
-import React from 'react';
-
+import '../ComponentsCSS/ProfileDisplay.css';
 interface ProfileDisplay{
   display_name: String;
   email: String;
@@ -8,11 +7,11 @@ interface ProfileDisplay{
 
 function ProfileDisplay(props: ProfileDisplay) {
   return (
-    <div>
+    <div className="profileStats">
       <h2>Profile</h2>
       <p>Display Name: {props.display_name} </p>
       <p>Email: {props.email}</p>
-      {/* <p>Followers: {props.followers}</p> */}
+      <p>Followers: {props.followers}</p>
       <h3>Playlists</h3>
       <p>Number of Playlists: </p>
     </div>

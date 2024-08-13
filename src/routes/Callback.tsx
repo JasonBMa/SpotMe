@@ -13,15 +13,13 @@ function Callback() {
 
   const redirectUri = 'http://localhost:5173/Callback';
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("code"); //gets code from url returned from Spotify OAuth
-    console.log("Code: " + code);
-    getAccessToken(clientId, code)
-      .then(() => {
-        navigate("/Home");
-      });
-  }, []);
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code"); //gets code from url returned from Spotify OAuth
+  console.log("Code: " + code);
+  getAccessToken(clientId, code)
+    .then(() => {
+      navigate("/Home");
+    });
 
   async function getAccessToken(clientId: string, code: string){
     const verifier = localStorage.getItem("code_verifier");

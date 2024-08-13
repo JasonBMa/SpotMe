@@ -3,31 +3,14 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
 }
 
 h1 {
@@ -47,7 +30,7 @@ button {
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: #38ca69;
 }
 button:focus,
 button:focus-visible {
@@ -60,9 +43,23 @@ button:focus-visible {
     background-color: #ffffff;
   }
   a:hover {
-    color: #747bff;
+    color: #33bb27;
   }
   button {
     background-color: #f9f9f9;
   }
+}
+
+.spotifyGreenText {
+  color:#1DB954; /* Spotify Green */
+}
+
+.spotify-themeify-btn {
+  background-color: #1DB954;
+  border-color: rgb(44, 160, 33);
+}
+
+.spotify-themeify-btn:hover {
+  background-color: #47ce76;
+  border-color: #FFF; 
 }

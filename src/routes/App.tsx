@@ -35,7 +35,7 @@ function App() {
     const codeChallenge = await generateCodeChallenge(codeVerifier);;
     window.localStorage.setItem('code_verifier', codeVerifier);
   
-    const scope = 'user-read-private user-read-email';
+    const scope = 'user-read-private user-read-email user-top-read';
     const authUrl = new URL("https://accounts.spotify.com/authorize")
     const redirectUri = 'http://localhost:5173/Callback';
 

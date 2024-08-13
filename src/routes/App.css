@@ -1,17 +1,17 @@
 #root {
-  max-width: 1280px;
   margin: 0 0;
-  text-align: center;
 }
 
-.title-spot {
+.spotifyGreenText {
   color:#1DB954; /* Spotify Green */
 }
 
 .spotify-themeify-btn {
   background-color: #1DB954;
+  border-color: rgb(44, 160, 33);
 }
 
 .spotify-themeify-btn:hover {
+  background-color: #47ce76;
   border-color: #FFF; 
 }
