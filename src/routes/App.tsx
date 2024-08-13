@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Container, Row, Button } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 //import { useNavigate } from "react-router-dom";
 import './App.css'
@@ -103,20 +103,15 @@ function App() {
 
   return (
     <>
-      <Container
-        style={{
-          width: "100vw",
-          display: "flex",
-          justifyContent: "center"
-        }}
-      >
-        <Row
-          style={{
-            justifyContent: "around"
-          }}
-        >
-          <h1><span className="title-spot">Spot</span>Me</h1>
-          <Button className="spotify-themeify-btn" onClick={logInWithSpotify}>Log In With Spotify</Button>
+      <Container>
+        <Row style={{height:"30vh"}}>
+
+        </Row>
+        <Row>
+          <Col className="text-center">
+            <h1 className="display-1"><span className="spotifyGreenText">Spot</span>Me</h1>
+            <Button className="spotify-themeify-btn" onClick={logInWithSpotify}>Log In With Spotify</Button>
+          </Col>
         </Row>
       </Container>
     </>
