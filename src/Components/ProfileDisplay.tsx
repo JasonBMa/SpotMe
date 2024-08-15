@@ -7,13 +7,21 @@ interface ProfileDisplay{
 
 function ProfileDisplay(props: ProfileDisplay) {
   return (
-    <div className="profileStats">
-      <h2>Profile</h2>
-      <p>Display Name: {props.display_name} </p>
-      <p>Email: {props.email}</p>
-      <p>Followers: {props.followers}</p>
-      <h3>Playlists</h3>
-      <p>Number of Playlists: </p>
+    <div className="h-auto profileStats">
+      <h2 className=""><span className="spotifyGreenText">Pro</span>file</h2>
+      <p className="fw-light">
+        <span className="fw-bold">Display Name:</span> {props.display_name}
+      </p>
+      <p className="fw-light">
+        <span className="fw-bold">Email:</span> {props.email}
+      </p>
+      <p className="fw-light">
+        <span className="fw-bold">Followers:</span> {props.followers}
+      </p>
+      <h3><span className="fw-bold spotifyGreenText">Play</span>lists</h3>
+      <p className="fw-light">
+        <span className="fw-bold">Number of Playlists:</span>
+      </p>
     </div>
   );
 }

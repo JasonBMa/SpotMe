@@ -10,7 +10,7 @@ function Home() {
   const [searchInput, setSearchInput] = useState("");
   const [albums, setAlbums] = useState([]);
   const [profile, setProfile] = useState([]);
-  const [topSongs, setTopSongs] = useState([]);
+  const [TopAlbums, setTopAlbums] = useState([]);
   const [topArtists, setTopArtists] = useState([]);
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ function Home() {
   useEffect(() => {
     checkAccessKey();
     getProfile();
-    getUserTopSongs();
+    getUserTopAlbums();
   }, []);
 
   function checkAccessKey() {
@@ -67,11 +67,12 @@ function Home() {
   }
 
   async function search() {
+    const accessToken = localStorage.getItem("access_token");
     let artistParams = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + userAccessToken,
+        Authorization: "Bearer " + accessToken,
       },
     };
 
@@ -115,20 +116,20 @@ function Home() {
       });
   }
 
-  async function getUserTopSongs() {
+  async function getUserTopAlbums() {
     console.log("Getting Top Songs");
     const accessToken = localStorage.getItem("access_token");
-    let topSongsParams = {
+    let TopAlbumsParams = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + accessToken,
       },
     };
-    await fetch("https://api.spotify.com/v1/me/top/tracks?limit=5", topSongsParams)
+    await fetch("https://api.spotify.com/v1/me/top/tracks?limit=5", TopAlbumsParams)
       .then((result) => result.json())
       .then((data) => {
-        setTopSongs(data.items)
+        setTopAlbums(data.items)
       }).catch((error) => { console.log("Error Fetching User's Top Songs: " + error) });
   }
   return (
@@ -139,38 +140,40 @@ function Home() {
         className="home-header"
       >
         <Col>
-          <h1><span className="spotifyGreenText">Spot</span>Me</h1>
+          <h1 className="display-1"><span className="spotifyGreenText">Spot</span>Me</h1>
           <Button size="sm" className="spotify-themeify-btn" onClick={logoutSpotify}>Logout</Button>
         </Col>
       </Row>
       <Row>
-        <Col xs={4}>
+        <Col xs={4} className="border border-success p-2 mb-2 border-opacity-50">
           <ProfileDisplay
             display_name={profile.display_name}
             email={profile.email}
             followers={profile.followers ? profile.followers.total : "0"}
           />
         </Col>
-      <Col xs={8} >
+      <Col xs={8} className="p-2">
           <h2 className=""><span className="spotifyGreenText">{profile.display_name}'s</span> Top Songs</h2>
           <CardGroup>
-          {topSongs && topSongs.map((song) => {
+          {TopAlbums && TopAlbums.map((track) => {
             return (
                 <Card style={{ width: '5rem' }}>
                   <Card.Img
                     width={50}
-                    src={song.album.images[0].url}
+                    src={track.album.images[0].url}
                     style={{ borderRadius: '4%', }}
                   />
                   <Card.Body>
-                    <Card.Title>{song.album.name}</Card.Title>
-                    <Card.Subtitle>{song.artists[0].name}</Card.Subtitle>
+                    <Card.Title>{track.album.name}</Card.Title>
                 </Card.Body>
                 <Card.Footer>
-                  <Button size="sm" className="spotify-themeify-btn" href={song.album.uri}>
+                  <Card.Subtitle className="align-text-bottom">{track.artists[0].name}</Card.Subtitle>
+                </Card.Footer>
+                {/* <Card.Footer>
+                  <Button size="sm" className="spotify-themeify-btn" href={track.album.uri}>
                     <img style={{width: "100%"}} src={SpotifyLogoClear} />
                   </Button>
-                </Card.Footer>
+                </Card.Footer> */}
                 </Card>
               
             )
@@ -178,31 +181,57 @@ function Home() {
           </CardGroup>
         </Col>
       </Row>
-      <Row>
-        <InputGroup>
-          <FormControl
-            placeholder="Search For Artist"
-            type="input"
-            aria-label="Search for an Artist"
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                search();
-              }
-            }} // search function
-            onChange={(event) => setSearchInput(event.target.value)} // setSearch
-            style={{
-              width: "300px",
-              height: "35px",
-              borderWidth: "0px",
-              borderStyle: "solid",
-              borderRadius: "5px",
-              marginRight: "10px",
-              paddingLeft: "10px",
-            }}
-          />
+      <Row className="pt-2">
+        <Col>
+          <InputGroup>
+            <FormControl
+              placeholder="Search For Artist"
+              type="input"
+              aria-label="Search for an Artist"
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  search();
+                }
+              }} // search function
+              onChange={(event) => setSearchInput(event.target.value)} // setSearch
+              style={{
+                width: "300px",
+                height: "35px",
+                borderWidth: "0px",
+                borderStyle: "solid",
+                borderRadius: "5px",
+                marginRight: "10px",
+                paddingLeft: "10px",
+              }}
+            />
 
-          <Button onClick={search}>Search</Button>
-        </InputGroup>
+            <Button onClick={search}>Search</Button>
+          </InputGroup>
+          <div style={{display:"flex", flexWrap:"wrap"}}>
+            {albums.map((album) => {
+              return <Card style={{ width: "10rem" }}>
+                <Card.Img
+                  width={200}
+                  src={album.images[0].url}
+                  style={{ borderRadius: '4%', }}
+                />
+                <Card.Body style={{ color: 'white' }}>
+                  <Card.Title style={{
+                    whiteSpace: 'wrap',
+                    fontWeight: 'bold',
+                    maxWidth: '200px',
+                    fontSize: '18px',
+                    marginTop: '10px',
+                  }}
+                  >{album.name}</Card.Title>
+
+                  <Card.Text>{album.release_date}</Card.Text>
+                </Card.Body>
+              </Card>
+            })}
+          </div>
+        </Col>
+        <Col></Col>
       </Row>
     </Container>
   )
