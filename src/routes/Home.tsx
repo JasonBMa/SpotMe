@@ -10,7 +10,7 @@ function Home() {
   const [searchInput, setSearchInput] = useState("");
   const [albums, setAlbums] = useState([]);
   const [profile, setProfile] = useState([]);
-  const [TopAlbums, setTopAlbums] = useState([]);
+  const [TopSongs, setTopSongs] = useState([]);
   const [topArtists, setTopArtists] = useState([]);
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ function Home() {
   useEffect(() => {
     checkAccessKey();
     getProfile();
-    getUserTopAlbums();
+    getUserTopSongs();
   }, []);
 
   function checkAccessKey() {
@@ -116,20 +116,20 @@ function Home() {
       });
   }
 
-  async function getUserTopAlbums() {
+  async function getUserTopSongs() {
     console.log("Getting Top Songs");
     const accessToken = localStorage.getItem("access_token");
-    let TopAlbumsParams = {
+    let TopSongsParams = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + accessToken,
       },
     };
-    await fetch("https://api.spotify.com/v1/me/top/tracks?limit=5", TopAlbumsParams)
+    await fetch("https://api.spotify.com/v1/me/top/tracks?limit=5", TopSongsParams)
       .then((result) => result.json())
       .then((data) => {
-        setTopAlbums(data.items)
+        setTopSongs(data.items)
       }).catch((error) => { console.log("Error Fetching User's Top Songs: " + error) });
   }
   return (
@@ -143,11 +143,13 @@ function Home() {
         </Col>
       </Row>
       <Row>
-        <Col xs={4} className="border border-success p-2 mb-2 border-opacity-50">
+        <Col xs={4} className="border border-success p-2 mb-2 border-opacity-50 rounded">
           <ProfileDisplay
+            profile_image={profile.images ? profile.images[0].url : null}
             display_name={profile.display_name}
             email={profile.email}
             followers={profile.followers ? profile.followers.total : "0"}
+            product={profile.product}
           />
         </Col>
       <Col xs={8} className="p-2">
@@ -156,7 +158,7 @@ function Home() {
             <Button style={{height:"5%"}} size="sm" className="spotify-themeify-btn" onClick={logoutSpotify}>Logout</Button>
           </div>
           <CardGroup>
-          {TopAlbums && TopAlbums.map((track) => {
+          {TopSongs && TopSongs.map((track) => {
             return (
                 <Card style={{ width: '5rem' }}>
                   <Card.Img
@@ -165,13 +167,12 @@ function Home() {
                     style={{ borderRadius: '4%', }}
                   />
                   <Card.Body>
-                    <Card.Title>{track.album.name}</Card.Title>
+                    <Card.Title>{track.name}</Card.Title>
                 </Card.Body>
                 <Card.Footer>
                   <Card.Subtitle className="align-text-bottom">{track.artists[0].name}</Card.Subtitle>
                 </Card.Footer>
                 </Card>
-              
             )
           })}
           </CardGroup>
