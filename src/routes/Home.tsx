@@ -93,7 +93,7 @@ function Home() {
     )
       .then((result) => result.json())
       .then((data) => {
-        setAlbums(data.items);
+        setAlbums(data.items.slice(0, 6));
       });
   }
 
@@ -134,14 +134,12 @@ function Home() {
   }
   return (
     <Container
-      className="home-container"
     >
       <Row
         className="home-header"
       >
         <Col>
           <h1 className="display-1"><span className="spotifyGreenText">Spot</span>Me</h1>
-          <Button size="sm" className="spotify-themeify-btn" onClick={logoutSpotify}>Logout</Button>
         </Col>
       </Row>
       <Row>
@@ -153,7 +151,10 @@ function Home() {
           />
         </Col>
       <Col xs={8} className="p-2">
-          <h2 className=""><span className="spotifyGreenText">{profile.display_name}'s</span> Top Songs</h2>
+          <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
+            <h2><span className="spotifyGreenText">{profile.display_name}'s</span> Top Songs</h2>
+            <Button style={{height:"5%"}} size="sm" className="spotify-themeify-btn" onClick={logoutSpotify}>Logout</Button>
+          </div>
           <CardGroup>
           {TopAlbums && TopAlbums.map((track) => {
             return (
@@ -169,11 +170,6 @@ function Home() {
                 <Card.Footer>
                   <Card.Subtitle className="align-text-bottom">{track.artists[0].name}</Card.Subtitle>
                 </Card.Footer>
-                {/* <Card.Footer>
-                  <Button size="sm" className="spotify-themeify-btn" href={track.album.uri}>
-                    <img style={{width: "100%"}} src={SpotifyLogoClear} />
-                  </Button>
-                </Card.Footer> */}
                 </Card>
               
             )
@@ -182,8 +178,8 @@ function Home() {
         </Col>
       </Row>
       <Row className="pt-2">
-        <Col>
-          <InputGroup>
+        <Col style={{padding:"0"}}>
+          <InputGroup style={{alignItems:"center"}}>
             <FormControl
               placeholder="Search For Artist"
               type="input"
@@ -205,11 +201,11 @@ function Home() {
               }}
             />
 
-            <Button onClick={search}>Search</Button>
+            <Button className="spotify-themeify-btn" onClick={search}>Search</Button>
           </InputGroup>
           <div style={{display:"flex", flexWrap:"wrap"}}>
             {albums.map((album) => {
-              return <Card style={{ width: "10rem" }}>
+              return <Card style={{ width: "33%" }}>
                 <Card.Img
                   width={200}
                   src={album.images[0].url}
