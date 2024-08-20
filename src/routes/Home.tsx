@@ -11,7 +11,7 @@ function Home() {
   const [albums, setAlbums] = useState([]);
   const [profile, setProfile] = useState([]);
   const [TopSongs, setTopSongs] = useState([]);
-  const [topArtists, setTopArtists] = useState([]);
+  const [userPlaylists, setUserPlaylists] = useState([]);
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
   const navigate = useNavigate();
 
@@ -19,6 +19,7 @@ function Home() {
     checkAccessKey();
     getProfile();
     getUserTopSongs();
+    getUserPlaylists();
   }, []);
 
   function checkAccessKey() {
@@ -35,6 +36,21 @@ function Home() {
     }
   }
 
+  function getUserPlaylists() {
+    const accessToken = localStorage.getItem("access_token");
+    let playlistParams = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + accessToken,
+      },
+    };
+    fetch("https://api.spotify.com/v1/me/playlists", playlistParams)
+      .then((result) => result.json())
+      .then((data) => {
+        setUserPlaylists(data.items);
+      });
+  }
   function refreshToken() {
     const refreshToken = localStorage.getItem("refresh_token")
 
@@ -150,6 +166,7 @@ function Home() {
             email={profile.email}
             followers={profile.followers ? profile.followers.total : "0"}
             product={profile.product}
+            userPlaylists={userPlaylists ? userPlaylists : [] }
           />
         </Col>
       <Col xs={8} className="p-2">
