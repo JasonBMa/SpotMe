@@ -13,20 +13,23 @@ function ProfileDisplay(props: ProfileDisplay) {
   const [playlistTotalSaves, setPlaylistTotalSaves] = useState(0);
   const userPlaylistsCount = props.userPlaylists.length;
 
-  async function getPlaylistsTotalSaves(): number {
-    let totalSaves = Array<number>();
-    if (props.userPlaylists) {
-      totalSaves.push(getPlaylistSaves(playlist.id));
-    }
-    console.log(totalSaves);
-    return (totalSaves.reduce((a, b) => a + b, 0));
+   function getPlaylistsTotalSaves() {
+    let promises = props.userPlaylists.map((playlist: any) => {
+      getPlaylistSaves(playlist.id);
+    })
+    Promise.all(promises).then((results) => {
+      let totalSaves = results.reduce((acc, cur) => acc + cur, 0);
+      setPlaylistTotalSaves(totalSaves);
+      console.log("Total Saves: " + totalSaves);
+      return totalSaves;
+    });
   }
   
   useEffect(() => {
-    setPlaylistTotalSaves(getPlaylistsTotalSaves());
+    getPlaylistsTotalSaves();
   }, []);
 
-  function getPlaylistSaves(id: string): Promise<number> {
+  async function getPlaylistSaves(id: string): Promise<number> {
     const accessToken = localStorage.getItem("access_token");
     let playlistSavesParams = {
       method: "GET",
@@ -40,13 +43,14 @@ function ProfileDisplay(props: ProfileDisplay) {
       .then((data) => data.followers)
       .then((followers) => {
         console.log("Playlist Saves: " + followers.total);
-        return new Promise(resolve => setTimeout(() => followers.total, 100));
+        return followers.total;
+        // return new Promise(resolve => setTimeout(() => followers.total, 100));
       })
       .catch((error) => {
         console.log("Error Fetching Playlist Saves: " + error)
         return 0;
       });
-    
+    return 0;
   }
 
   return (
@@ -71,7 +75,7 @@ function ProfileDisplay(props: ProfileDisplay) {
         <span className="fw-bold">Number of Playlists: </span>{userPlaylistsCount}
       </p>
       <p>
-        {/* <span className="fw-bold">Total Playlist Saves: </span>{playlistTotalSaves} */}
+        <span className="fw-bold">Total Playlist Saves: </span>{playlistTotalSaves}
       </p>
     </div>
   );
