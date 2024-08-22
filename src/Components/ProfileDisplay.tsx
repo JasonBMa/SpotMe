@@ -1,33 +1,40 @@
 import { useState, useEffect } from 'react';
 import '../ComponentsCSS/ProfileDisplay.css';
 interface ProfileDisplay{
-  profile_image: String;
-  display_name: String;
-  email: String;
-  followers: String;
-  product: String;
+  profile_image: string;
+  display_name: string;
+  email: string;
+  followers: string;
+  product: string;
   userPlaylists: [];
 }
 
 function ProfileDisplay(props: ProfileDisplay) {
   const [playlistTotalSaves, setPlaylistTotalSaves] = useState(0);
-  const userPlaylistsCount = props.userPlaylists.length;
+  const [playlistCount, setPlaylistCount] = useState(0);
+  //const playlistCount = 0;
+  useEffect(() => {
+    setPlaylistCount(props.userPlaylists.length);
+    getPlaylistsTotalSaves();
 
-   function getPlaylistsTotalSaves() {
-    let promises = props.userPlaylists.map((playlist: any) => {
-      getPlaylistSaves(playlist.id);
+  }, [props.userPlaylists]);
+
+  function getPlaylistsTotalSaves() {
+    const playlistPromises: (Promise<number>)[] = [];
+    let total = 0;
+    props.userPlaylists.forEach((playlist: any) => {
+      playlistPromises.push(getPlaylistSaves(playlist.id));
     })
-    Promise.all(promises).then((results) => {
-      let totalSaves = results.reduce((acc, cur) => acc + cur, 0);
-      setPlaylistTotalSaves(totalSaves);
-      console.log("Total Saves: " + totalSaves);
-      return totalSaves;
+
+    Promise.all(playlistPromises).then((playlistData) => {
+        playlistData.forEach((saves) => { total += saves });
+    }).then(() => {
+      console.log("Total Playlist Saves: " + total);
+      setPlaylistTotalSaves(total);
+    }).catch((error) => { 
+        console.log("Error Fetching Playlist Saves: " + error)
     });
   }
-  
-  useEffect(() => {
-    getPlaylistsTotalSaves();
-  }, []);
 
   async function getPlaylistSaves(id: string): Promise<number> {
     const accessToken = localStorage.getItem("access_token");
@@ -38,19 +45,14 @@ function ProfileDisplay(props: ProfileDisplay) {
         Authorization: "Bearer " + accessToken,
       },
     };
-    fetch(`https://api.spotify.com/v1/playlists/${id}`, playlistSavesParams)
+    return fetch(`https://api.spotify.com/v1/playlists/${id}`, playlistSavesParams)
       .then((result) => result.json())
       .then((data) => data.followers)
-      .then((followers) => {
-        console.log("Playlist Saves: " + followers.total);
-        return followers.total;
-        // return new Promise(resolve => setTimeout(() => followers.total, 100));
-      })
+      .then((followers) => { console.log(followers.total); return followers.total })
       .catch((error) => {
-        console.log("Error Fetching Playlist Saves: " + error)
+        console.log("Error Fetching Playlist: " + error)
         return 0;
       });
-    return 0;
   }
 
   return (
@@ -72,7 +74,7 @@ function ProfileDisplay(props: ProfileDisplay) {
       </p>
       <h3><span className="fw-bold spotifyGreenText">Play</span>lists</h3>
       <p className="fw-light">
-        <span className="fw-bold">Number of Playlists: </span>{userPlaylistsCount}
+        <span className="fw-bold">Number of Playlists: </span>{playlistCount}
       </p>
       <p>
         <span className="fw-bold">Total Playlist Saves: </span>{playlistTotalSaves}
