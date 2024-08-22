@@ -3,10 +3,11 @@ import './App.css'
 
 function Callback() {
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+  const domainName = import.meta.env.VITE_DOMAIN_NAME;
   //const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
   const navigate = useNavigate();
 
-  const redirectUri = 'http://localhost:5173/Callback';
+  const redirectUri = domainName + "/Callback";
 
   const params = new URLSearchParams(window.location.search);
   const code = params.get("code"); //gets code from url returned from Spotify OAuth

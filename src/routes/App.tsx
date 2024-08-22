@@ -6,6 +6,7 @@ import './App.css'
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
 //const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
+const domainName = import.meta.env.VITE_DOMAIN_NAME;
 
 function generateCodeVerifier(length: number) {
   let text = '';
@@ -37,7 +38,7 @@ function App() {
   
     const scope = 'user-read-private user-read-email user-top-read';
     const authUrl = new URL("https://accounts.spotify.com/authorize")
-    const redirectUri = 'http://localhost:5173/Callback';
+    const redirectUri = domainName + "/Callback";
 
     const params =  {
       response_type: 'code',
