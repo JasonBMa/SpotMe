@@ -2,24 +2,59 @@ import { useState, useEffect } from 'react'
 import { FormControl, InputGroup, Container, Button, Row, Col, CardGroup, Card } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 import ProfileDisplay from '../Components/ProfileDisplay';
-import SpotifyLogoClear from '/public/icons/SpotifyLogoClear.png';
 import '../ComponentsCSS/Home.css'
 
+type Profile ={
+  display_name: string;
+  email: string;
+  followers: {
+    total: number;
+  };
+  product: string;
+  images: {
+    url: string;
+  }[];
+}
+
+type Playlists = [{
+  id: string;
+  length: number;
+  }
+];
+
+type Album = [{
+  name: string;
+  release_date: string;
+  images: {
+    url: string;
+  }[];
+}];
+
+type Song = [{
+  name: string;
+  album: {
+    images: {
+      url: string;
+    }[];
+  };
+  artists: {
+    name: string;
+  }[];
+}];
 function Home() {
-  const [userAccessToken, setUserAccessToken] = useState("");
   const [searchInput, setSearchInput] = useState("");
-  const [albums, setAlbums] = useState([]);
-  const [profile, setProfile] = useState([]);
-  const [TopSongs, setTopSongs] = useState([]);
-  const [userPlaylists, setUserPlaylists] = useState([]);
+  const [albums, setAlbums] = useState<Album | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [TopSongs, setTopSongs] = useState<Song | null>(null);
+  const [userPlaylists, setUserPlaylists] = useState<Playlists|null>(null);
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
   const navigate = useNavigate();
 
   useEffect(() => {
     checkAccessKey();
     getProfile();
-    getUserTopSongs();
     getUserPlaylists();
+    getUserTopSongs();
   }, []);
 
   function checkAccessKey() {
@@ -127,7 +162,6 @@ function Home() {
     await fetch("https://api.spotify.com/v1/me", profileParams)
       .then((result) => result.json())
       .then((data) => {
-        console.log(data)
         setProfile(data);
       });
   }
@@ -160,28 +194,27 @@ function Home() {
       </Row>
       <Row>
         <Col xs={4} className="border border-success p-2 mb-2 border-opacity-50 rounded">
-          <ProfileDisplay
-            profile_image={profile.images ? profile.images[0].url : null}
+          {profile && userPlaylists && <ProfileDisplay
+            profile_image={profile.images[0].url}
             display_name={profile.display_name}
             email={profile.email}
-            followers={profile.followers ? profile.followers.total : "0"}
+            followers={profile.followers.total.toString()}
             product={profile.product}
-            userPlaylists={userPlaylists ? userPlaylists : [] }
-          />
+            userPlaylists={userPlaylists}
+          />}
         </Col>
       <Col xs={8} className="p-2">
           <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
-            <h2><span className="spotifyGreenText">{profile.display_name}'s</span> Top Songs</h2>
+            <h2><span className="spotifyGreenText">{profile && profile.display_name}'s</span> Top Songs</h2>
             <Button style={{height:"5%"}} size="sm" className="spotify-themeify-btn" onClick={logoutSpotify}>Logout</Button>
           </div>
           <CardGroup>
           {TopSongs && TopSongs.map((track) => {
-            return (
-                <Card style={{ width: '5rem' }}>
+            return(
+                <Card style={{ width: '5rem' }} key={track.name}>
                   <Card.Img
                     width={50}
                     src={track.album.images[0].url}
-                    style={{ borderRadius: '4%', }}
                   />
                   <Card.Body>
                     <Card.Title>{track.name}</Card.Title>
@@ -222,8 +255,8 @@ function Home() {
             <Button className="spotify-themeify-btn" onClick={search}>Search</Button>
           </InputGroup>
           <div style={{display:"flex", flexWrap:"wrap"}}>
-            {albums.map((album) => {
-              return <Card style={{ width: "33%" }}>
+            {albums && albums.map((album) => {
+              return <Card style={{ width: "33%" }} key={album.name}>
                 <Card.Img
                   width={200}
                   src={album.images[0].url}

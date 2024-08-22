@@ -6,8 +6,14 @@ interface ProfileDisplay{
   email: string;
   followers: string;
   product: string;
-  userPlaylists: [];
+  userPlaylists: Playlists;
 }
+
+type Playlists = [{
+  id: string;
+  length: number;
+}
+];
 
 function ProfileDisplay(props: ProfileDisplay) {
   const [playlistTotalSaves, setPlaylistTotalSaves] = useState(0);
