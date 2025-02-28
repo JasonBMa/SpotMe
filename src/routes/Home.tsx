@@ -47,6 +47,7 @@ function Home() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [TopSongs, setTopSongs] = useState<Song | null>(null);
   const [userPlaylists, setUserPlaylists] = useState<Playlists|null>(null);
+  const [timeRange, setTimeRange] = useState("long_term");
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
   const navigate = useNavigate();
 
@@ -108,6 +109,20 @@ function Home() {
         console.log("Error: " + error);
         navigate("/");
       });
+  }
+
+  function setLongTerm() {
+    setTimeRange("long_term");
+    getUserTopSongs()
+  }
+
+  function setMediumTerm() {
+    setTimeRange("medium_term");
+    getUserTopSongs()
+  }
+  function setShortTerm() {
+    setTimeRange("short_term");
+    getUserTopSongs()
   }
 
   function logoutSpotify() {
@@ -176,9 +191,10 @@ function Home() {
         Authorization: "Bearer " + accessToken,
       },
     };
-    await fetch("https://api.spotify.com/v1/me/top/tracks?limit=5", TopSongsParams)
+    await fetch(`https://api.spotify.com/v1/me/top/tracks?limit=5&time_range=${timeRange}`, TopSongsParams)
       .then((result) => result.json())
       .then((data) => {
+        console.log(data.items)
         setTopSongs(data.items)
       }).catch((error) => { console.log("Error Fetching User's Top Songs: " + error) });
   }
@@ -205,7 +221,12 @@ function Home() {
         </Col>
       <Col xs={8} className="p-2">
           <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
-            <h2><span className="spotifyGreenText">{profile && profile.display_name}'s</span> Top Songs</h2>
+            <h2><span className="spotifyGreenText text-4xl">{profile && profile.display_name}'s</span> Top Songs</h2>
+            <div className="flex space-x-3 align-text-bottom text-white">
+              <p className={(timeRange == "long_term") ? 'spotifyGreenText' : 'opacity-25' } onClick={setLongTerm}>1 Year</p>
+              <p className={(timeRange == "medium_term") ? 'spotifyGreenText' : 'opacity-25' } onClick={setMediumTerm}>6 Months</p>
+              <p className={(timeRange == "short_term") ? 'spotifyGreenText' : 'opacity-25' } onClick={setShortTerm}>1 Month</p>
+            </div>
             <Button style={{height:"5%"}} size="sm" className="spotify-themeify-btn" onClick={logoutSpotify}>Logout</Button>
           </div>
           <CardGroup>
@@ -244,11 +265,10 @@ function Home() {
               style={{
                 width: "300px",
                 height: "35px",
-                borderWidth: "0px",
+                borderColor: "limegreen",
+                borderWidth: "1px",
                 borderStyle: "solid",
                 borderRadius: "5px",
-                marginRight: "10px",
-                paddingLeft: "10px",
               }}
             />
 
