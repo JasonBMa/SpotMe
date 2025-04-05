@@ -237,11 +237,11 @@ function Home() {
                     width={50}
                     src={track.album.images[0].url}
                   />
-                  <Card.Body>
-                    <Card.Title>{track.name}</Card.Title>
+                  <Card.Body className="p-2">
+                    <Card.Title className="lg:text-lg sm:text-sm">{track.name}</Card.Title>
                 </Card.Body>
-                <Card.Footer>
-                  <Card.Subtitle className="align-text-bottom">{track.artists[0].name}</Card.Subtitle>
+                <Card.Footer className="p-2">
+                  <Card.Subtitle className="align-text-bottom lg:text-m sm:text-xs">{track.artists[0].name}</Card.Subtitle>
                 </Card.Footer>
                 </Card>
             )
@@ -287,7 +287,7 @@ function Home() {
                     whiteSpace: 'wrap',
                     fontWeight: 'bold',
                     maxWidth: '200px',
-                    fontSize: '18px',
+                    fontSize: 'auto',
                     marginTop: '10px',
                   }}
                   >{album.name}</Card.Title>
