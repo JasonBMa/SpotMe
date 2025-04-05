@@ -60,8 +60,8 @@ function ProfileDisplay(props: ProfileDisplay) {
 
   return (
     <div className="text-left">
-      <div className="flex place-items-end">
-        <img src={props.profile_image} className="rounded mr-1 h-24 overflow-hidden" />
+      <div className="flex place-items-end w-full">
+        <img src={props.profile_image} className="rounded mr-1 w-1/5 overflow-hidden" />
         <h2 className="m-0 text-2xl spotifyGreenText">{props.display_name}</h2>
       </div>
       
