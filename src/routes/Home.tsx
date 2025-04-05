@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { FormControl, InputGroup, Container, Button, Row, Col, CardGroup, Card } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 import ProfileDisplay from '../Components/ProfileDisplay';
+import RecommendSongs from '../Components/RecommendSongs';
 import '../ComponentsCSS/Home.css'
 
 type Profile ={
@@ -199,17 +199,14 @@ function Home() {
       }).catch((error) => { console.log("Error Fetching User's Top Songs: " + error) });
   }
   return (
-    <Container
-    >
-      <Row
-        className="home-header"
-      >
-        <Col>
+    <div className="px-14">
+      <div className="home-header">
+        <div>
           <h1 className="display-1"><span className="spotifyGreenText">Spot</span>Me</h1>
-        </Col>
-      </Row>
-      <Row>
-        <Col xs={4} className="border border-success p-2 mb-2 border-opacity-50 rounded">
+        </div>
+      </div>
+      <div className="flex w-5/6 self-center m-auto space-x-3">
+        <div className="border border-success p-2 border-opacity-50 rounded w-1/3">
           {profile && userPlaylists && <ProfileDisplay
             profile_image={profile.images[0].url}
             display_name={profile.display_name}
@@ -218,41 +215,39 @@ function Home() {
             product={profile.product}
             userPlaylists={userPlaylists}
           />}
-        </Col>
-      <Col xs={8} className="p-2">
+        </div>
+        <div className="w-2/3">
           <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
             <h2><span className="spotifyGreenText text-4xl">{profile && profile.display_name}'s</span> Top Songs</h2>
-            <div className="flex space-x-3 align-text-bottom text-white">
-              <p className={(timeRange == "long_term") ? 'spotifyGreenText' : 'opacity-25' } onClick={setLongTerm}>1 Year</p>
+            <div className="flex space-x-3 align-text-bottom text-white cursor-pointer">
+              <p className={(timeRange == "long_term") ? 'spotifyGreenText' : 'opacity-25'} onClick={setLongTerm}>1 Year</p>
               <p className={(timeRange == "medium_term") ? 'spotifyGreenText' : 'opacity-25' } onClick={setMediumTerm}>6 Months</p>
               <p className={(timeRange == "short_term") ? 'spotifyGreenText' : 'opacity-25' } onClick={setShortTerm}>1 Month</p>
             </div>
-            <Button style={{height:"5%"}} size="sm" className="spotify-themeify-btn" onClick={logoutSpotify}>Logout</Button>
+            <button className="px-3 bg-green-500 rounded font-medium" onClick={logoutSpotify}>Logout</button>
           </div>
-          <CardGroup>
+          <div className="flex">
           {TopSongs && TopSongs.map((track) => {
             return(
-                <Card style={{ width: '5rem' }} key={track.name}>
-                  <Card.Img
-                    width={50}
-                    src={track.album.images[0].url}
-                  />
-                  <Card.Body className="p-2">
-                    <Card.Title className="lg:text-lg sm:text-sm">{track.name}</Card.Title>
-                </Card.Body>
-                <Card.Footer className="p-2">
-                  <Card.Subtitle className="align-text-bottom lg:text-m sm:text-xs">{track.artists[0].name}</Card.Subtitle>
-                </Card.Footer>
-                </Card>
+              <div className="w-1/5" key={track.name}>
+                <img
+                  className="p-1 rounded-lg"
+                  src={track.album.images[0].url}
+                />
+                <div className="">
+                  <p className="lg:text-xl sm:text-sm font-medium">{track.name} </p>
+                  <p className="align-text-bottom lg:text-lg sm:text-xs spotifyGreenText">{track.artists[0].name} </p>
+                </div>
+              </div>
             )
           })}
-          </CardGroup>
-        </Col>
-      </Row>
-      <Row className="pt-2">
-        <Col style={{padding:"0"}}>
-          <InputGroup style={{alignItems:"center"}}>
-            <FormControl
+          </div>
+        </div>
+      </div>
+      <div className="pt-2">
+        <div>
+          <form className="flex">
+            <input
               placeholder="Search For Artist"
               type="input"
               aria-label="Search for an Artist"
@@ -270,37 +265,36 @@ function Home() {
                 borderStyle: "solid",
                 borderRadius: "5px",
               }}
-            />
-
-            <Button className="spotify-themeify-btn" onClick={search}>Search</Button>
-          </InputGroup>
-          <div style={{display:"flex", flexWrap:"wrap"}}>
+              />
+            <button className="spotify-themeify-btn px-2 rounded" onClick={search}>Search</button>
+          </form>
+        </div>
+          <div className="flex">
             {albums && albums.map((album) => {
-              return <Card style={{ width: "33%" }} key={album.name}>
-                <Card.Img
-                  width={200}
+              return <div style={{ width: "33%" }} key={album.name}>
+                <img
                   src={album.images[0].url}
-                  style={{ borderRadius: '4%', }}
+                  className='w-1/3'
                 />
-                <Card.Body style={{ color: 'white' }}>
-                  <Card.Title style={{
+                <div style={{ color: 'white' }}>
+                  <div style={{
                     whiteSpace: 'wrap',
                     fontWeight: 'bold',
                     maxWidth: '200px',
                     fontSize: 'auto',
                     marginTop: '10px',
                   }}
-                  >{album.name}</Card.Title>
-
-                  <Card.Text>{album.release_date}</Card.Text>
-                </Card.Body>
-              </Card>
+                  >{album.name}</div>
+                  <div>{album.release_date}</div>
+                </div>
+              </div>
             })}
           </div>
-        </Col>
-        <Col></Col>
-      </Row>
-    </Container>
+        </div>
+        <div>
+            <RecommendSongs></RecommendSongs>
+        </div>
+    </div>
   )
 }
 

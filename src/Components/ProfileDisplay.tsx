@@ -31,13 +31,11 @@ function ProfileDisplay(props: ProfileDisplay) {
       playlistPromises.push(getPlaylistSaves(playlist.id));
     })
 
-    Promise.all(playlistPromises).then((playlistData) => {
-        playlistData.forEach((saves) => { total += saves });
-    }).then(() => {
-      console.log("Total Playlist Saves: " + total);
-      setPlaylistTotalSaves(total);
-    }).catch((error) => { 
-        console.log("Error Fetching Playlist Saves: " + error)
+    Promise.all(playlistPromises).then((playlistData) =>
+      playlistData.forEach((saves) => { total += saves }))
+    .then(() => setPlaylistTotalSaves(total))
+    .catch((error) => { 
+      console.log("Error Fetching Playlist Saves: " + error)
     });
   }
 
